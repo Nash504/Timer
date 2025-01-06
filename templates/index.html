@@ -13,11 +13,23 @@
   </head>
   <body>
     <div class="container">
-      <h1 class="mt-5">Times Data</h1>
+      <h1 class="mt-5"></h1>
+
+      <!-- Stopwatch Section -->
+      <div class="mt-5">
+        <h3>Stopwatch</h3>
+        <div id="stopwatch" style="font-size: 2em; margin-bottom: 20px">
+          0:00:000
+        </div>
+        <button onclick="startStop()" class="btn btn-primary">Start</button>
+        <button onclick="resetStopwatch()" class="btn btn-secondary ml-2">
+          Reset
+        </button>
+
       <!-- Form to add new user -->
-      <form method="POST" action="/add_user">
+      <form method="POST" action="/add_user" class="mt-5">
         <div class="mb-3">
-          <label>Name</label>
+          <label for="name" class="form-label"><h3>Name</h3></label>
           <input
             type="text"
             class="form-control"
@@ -26,30 +38,83 @@
             required
           />
         </div>
-        <div class="mb-3">
-          <label>Time</label>
-          <input
-            type="text"
-            class="form-control"
-            id="time"
-            name="time"
-            required
-          />
-        </div>
+        <!-- Hidden input for time -->
+        <input type="hidden" id="time" name="time" />
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
-
+      </div
       <!-- Display the times data -->
       <ol class="mt-5">
         {% for i in times %}
-        <li>
-          {{ i['name'] }} : {{ i['time'] }}
-          <!-- Delete Button -->
-            <a href='/remove_user/{{i['name']}}' class="btn btn-danger btn-sm ml-2" style="padding: 5px margin:12px;">Delete</a>
-        </li>
+        <li><h5>{{ i['name'] }} - {{ i['time'] }}<h5></li>
+        <a
+          href='/remove_user/{{i["name"]}}'
+          class="btn btn-danger btn-sm ml-2"
+          style="padding: 5px; margin: 12px"
+          >Delete</a
+        >
         {% endfor %}
       </ol>
     </div>
+
+    <script>
+      let running = false;
+      let time = 0;
+      let milliseconds = 0;
+      let interval;
+
+      function startStop() {
+        if (running) {
+          clearInterval(interval);
+          document.querySelector("button").textContent = "Start";
+        } else {
+          interval = setInterval(updateTime, 10); // Update every 10ms
+          document.querySelector("button").textContent = "Stop";
+        }
+        running = !running;
+      }
+
+      function updateTime() {
+        milliseconds++;
+        if (milliseconds >= 100) {
+          milliseconds = 0;
+          time++;
+        }
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        document.getElementById("stopwatch").textContent = `${minutes}:${
+          seconds < 10 ? "0" + seconds : seconds
+        }:${
+          milliseconds < 10
+            ? "00" + milliseconds
+            : milliseconds < 100
+            ? "0" + milliseconds
+            : milliseconds
+        }`;
+      }
+
+      function resetStopwatch() {
+        clearInterval(interval);
+        time = 0;
+        milliseconds = 0;
+        running = false;
+        document.getElementById("stopwatch").textContent = "0:00:000";
+        document.querySelector("button").textContent = "Start";
+      }
+
+      // Set the value of the hidden input when the form is submitted
+      document.querySelector("form").onsubmit = function () {
+        document.getElementById("time").value = `${Math.floor(time / 60)}:${
+          time % 60 < 10 ? "0" + (time % 60) : time % 60
+        }:${
+          milliseconds < 10
+            ? "00" + milliseconds
+            : milliseconds < 100
+            ? "0" + milliseconds
+            : milliseconds
+        }`;
+      };
+    </script>
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

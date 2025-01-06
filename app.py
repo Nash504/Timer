@@ -5,7 +5,7 @@ import os
 
 load_dotenv()
 
-app = Flask(__name__, template_folder='templates')  # Corrected folder name
+app = Flask(__name__, template_folder='templates')
 supabase_url = os.getenv('SUPABASE_URL')
 supabase_key = os.getenv('SUPABASE_KEY')
 supabase = create_client(supabase_url, supabase_key)
@@ -17,8 +17,8 @@ def index():
 
 @app.route('/add_user', methods=['POST'])
 def add_user():
-    name = request.form.get('name')
-    time = request.form.get('time')
+    name = request.form.get('name').title()
+    time = request.form.get('time')  # This time will be submitted with the form
     response = supabase.table("times").insert([{"name": name, "time": time}]).execute()
     return redirect(url_for("index"))
 
