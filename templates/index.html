@@ -28,15 +28,19 @@
   <body class="bg-dark text-white">
     <div class="container">
       <!-- Stopwatch and Name Input Section inside the border -->
-      <div class="mt-5 border border-white rounded p-3">
+      <div class="mt-5 border border-white rounded p-3 text-center">
         <h3>Stopwatch</h3>
         <div id="stopwatch" style="font-size: 2em; margin-bottom: 20px">
           0:00:000
         </div>
-        <button onclick="startStop()" class="btn btn-primary">Start</button>
-        <button onclick="resetStopwatch()" class="btn btn-secondary ml-2">
-          Reset
-        </button>
+        <div class="d-flex justify-content-center">
+          <button onclick="startStop()" class="btn btn-primary mx-2">
+            Start
+          </button>
+          <button onclick="resetStopwatch()" class="btn btn-secondary mx-2">
+            Reset
+          </button>
+        </div>
 
         <!-- Form to add new user inside the same border -->
         <form method="POST" action="/add_user" class="mt-4">
@@ -77,17 +81,17 @@
 
     <script>
       let running = false;
-      let time = 0;
-      let milliseconds = 0;
+      let time = 0; // Total time in seconds
+      let milliseconds = 0; // Milliseconds counter
       let interval;
 
       function startStop() {
         if (running) {
-          clearInterval(interval);
-          document.querySelector("button").textContent = "Start";
+          clearInterval(interval); // Stop the timer
+          document.querySelector("button.btn-primary").textContent = "Start";
         } else {
           interval = setInterval(updateTime, 10); // Update every 10ms
-          document.querySelector("button").textContent = "Stop";
+          document.querySelector("button.btn-primary").textContent = "Stop";
         }
         running = !running;
       }
@@ -112,12 +116,12 @@
       }
 
       function resetStopwatch() {
-        clearInterval(interval);
+        clearInterval(interval); // Stop the interval
         time = 0;
         milliseconds = 0;
         running = false;
         document.getElementById("stopwatch").textContent = "0:00:000";
-        document.querySelector("button").textContent = "Start";
+        document.querySelector("button.btn-primary").textContent = "Start";
       }
 
       // Set the value of the hidden input when the form is submitted

@@ -24,8 +24,20 @@ def add_user():
 
 @app.route('/remove_user/<string:name>')
 def remove_user(name):
-    response = supabase.table("times").delete().eq("name", name).execute()
-    return redirect(url_for("index"))
+    try:
+        # Attempt to delete the user from Supabase
+        response = supabase.table("times").delete().eq("name", name).execute()
+
+        # Check if the delete operation was successful
+        if response.status_code == 200:
+            return redirect(url_for("index"))
+        else:
+            raise Exception("Failed to delete user")
+    except Exception as e:
+        # Log the error if there's an issue
+        print(f"Error removing user: {e}")
+        return redirect(url_for("index"))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
