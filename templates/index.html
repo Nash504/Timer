@@ -18,8 +18,16 @@
       href="{{ url_for('static', filename='styles.css') }}"
       rel="stylesheet"
     />
+    <style>
+      .body {
+        font-weight: bolder; /* Slightly bolder text */
+      }
+      .btn {
+        font-family: "Poppins", sans-serif;
+      }
+    </style>
   </head>
-  <body class="bg-black text-white">
+  <body class="bg-black text-white body">
     <div class="container">
       <!-- Stopwatch and Name Input Section inside the border -->
       <div class="mt-5 border border-white rounded p-2 text-center">
@@ -42,7 +50,7 @@
             <label for="name" class="form-label"><h2>Name</h2></label>
             <input
               type="text"
-              class="form-control input"
+              class="form-control input body"
               id="name"
               name="name"
               required
