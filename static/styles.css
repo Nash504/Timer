@@ -1,0 +1,28 @@
+.button {
+  background-color: white;
+  color: black;
+  font-size: smaller;
+  padding: 8px;
+  font-size: 3px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 4px;
+  padding-right: 20px;
+  font-weight: 700;
+  font-size: medium;
+  box-shadow: 2px 2px 0 0 black, 4px 4px 0 0 black;
+  transition: 0.3s;
+  width: 20%;
+  text-align: center;
+}
+.button:hover {
+  box-shadow: 3px 3px 0 0 black, 6px 6px 0 0 black;
+  transform: translate(-2px, -2px);
+  background-color: white;
+  color: black;
+}
+.input {
+  width: 50%;
+  margin: 0 auto;
+  display: block;
+}
