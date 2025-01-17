@@ -19,7 +19,7 @@ def index():
 def add_user():
     name = request.form.get('name').title()
     time = request.form.get('time')  # This time will be submitted with the form
-    response = supabase.table("times").insert([{"name": name, "time": time}]).execute()
+    response = supabase.table("times").insert([{"name": name, "time": time }]).execute()
     return redirect(url_for("index"))
 
 @app.route('/remove_user/<string:name>')

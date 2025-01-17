@@ -20,18 +20,73 @@
     />
     <style>
       .body {
-        font-weight: bolder; /* Slightly bolder text */
+        font-weight: bolder;
       }
       .btn {
         font-family: "Poppins", sans-serif;
+      }
+      .green-border {
+        border-color: green !important;
+      }
+      .orange-border {
+        border-color: orange !important;
+      }
+      .red-border {
+        border-color: red !important;
       }
     </style>
   </head>
   <body class="bg-black text-white body">
     <div class="container">
       <!-- Stopwatch and Name Input Section inside the border -->
-      <div class="mt-5 border border-white rounded p-2 text-center">
+      <div
+        id="stopwatch-container"
+        class="mt-5 border border-white rounded p-2 text-center"
+      >
         <h2>Stopwatch</h2>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="speech"
+            name="category"
+            value="speech"
+          />
+          <label class="form-check-label" for="speech">Speech</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="icebreaker"
+            name="category"
+            value="icebreaker"
+          />
+          <label class="form-check-label" for="icebreaker">Icebreaker</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="table_topics"
+            name="category"
+            value="table_topics"
+          />
+          <label class="form-check-label" for="table_topics"
+            >Table Topics</label
+          >
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            id="evaluation"
+            name="category"
+            value="evaluation"
+          />
+          <label class="form-check-label" for="evaluation">Evaluation</label>
+        </div>
+
         <div id="stopwatch" style="font-size: 2em; margin-bottom: 20px">
           0:00:000
         </div>
@@ -87,12 +142,19 @@
       let milliseconds = 0; // Milliseconds counter
       let interval;
 
+      const categoryTimes = {
+        speech: { white: 300, green: 360, orange: 420, red: 480 },
+        icebreaker: { white: 360, green: 420, orange: 480, red: 540 },
+        table_topics: { white: 60, green: 90, orange: 120, red: 150 },
+        evaluation: { white: 120, green: 150, orange: 180, red: 210 },
+      };
+
       function startStop() {
         if (running) {
-          clearInterval(interval); // Stop the timer
+          clearInterval(interval);
           document.querySelector("button.btn").textContent = "Start";
         } else {
-          interval = setInterval(updateTime, 10); // Update every 10ms
+          interval = setInterval(updateTime, 10);
           document.querySelector("button.btn").textContent = "Stop";
         }
         running = !running;
@@ -104,8 +166,10 @@
           milliseconds = 0;
           time++;
         }
+
         const minutes = Math.floor(time / 60);
         const seconds = time % 60;
+
         document.getElementById("stopwatch").textContent = `${minutes}:${
           seconds < 10 ? "0" + seconds : seconds
         }:${
@@ -115,29 +179,50 @@
             ? "0" + milliseconds
             : milliseconds
         }`;
+
+        updateBorderColor();
       }
 
       function resetStopwatch() {
-        clearInterval(interval); // Stop the interval
+        clearInterval(interval);
         time = 0;
         milliseconds = 0;
         running = false;
         document.getElementById("stopwatch").textContent = "0:00:000";
         document.querySelector("button.btn").textContent = "Start";
+        document.getElementById("stopwatch-container").className =
+          "mt-5 border border-white rounded p-2 text-center";
       }
 
-      // Set the value of the hidden input when the form is submitted
-      document.querySelector("form").onsubmit = function () {
-        document.getElementById("time").value = `${Math.floor(
-          time / 60
-        )} min : ${time % 60 < 10 ? "0" + (time % 60) : time % 60} sec`;
-      };
-    </script>
+      function updateBorderColor() {
+        const selectedCategory = document.querySelector(
+          'input[name="category"]:checked'
+        )?.value;
+        if (!selectedCategory || !categoryTimes[selectedCategory]) return;
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
+        const { white, green, orange } = categoryTimes[selectedCategory];
+        const container = document.getElementById("stopwatch-container");
+
+        if (time >= orange) {
+          container.className =
+            "mt-5 border red-border rounded p-2 text-center";
+        } else if (time >= green) {
+          container.className =
+            "mt-5 border orange-border rounded p-2 text-center";
+        } else if (time >= white) {
+          container.className =
+            "mt-5 border green-border rounded p-2 text-center"; // Start with green after white threshold
+        } else {
+          container.className =
+            "mt-5 border border-white rounded p-2 text-center"; // Keep white before the white threshold
+        }
+      }
+
+      // Update the hidden time input before form submission
+      document.querySelector("form").addEventListener("submit", function () {
+        document.getElementById("time").value =
+          document.getElementById("stopwatch").textContent;
+      });
+    </script>
   </body>
 </html>
