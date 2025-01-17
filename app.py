@@ -12,14 +12,14 @@ supabase = create_client(supabase_url, supabase_key)
 
 @app.route('/')
 def index():
-    response = supabase.table("times").select("*").execute()
+    response = supabase.table("times").select("*").order("category").execute()
     return render_template('index.html', times=response['data'])
 
 @app.route('/add_user', methods=['POST'])
 def add_user():
     name = request.form.get('name').title()
     time = request.form.get('time') 
-    category=request.form.get('category')# This time will be submitted with the form
+    category=request.form.get('category').title()# This time will be submitted with the form
     response = supabase.table("times").insert([{"name": name, "time": time ,"category":category }]).execute()
     return redirect(url_for("index"))
 
