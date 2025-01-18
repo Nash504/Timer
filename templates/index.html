@@ -21,6 +21,7 @@
     <style>
       .body {
         font-weight: bolder;
+        color: #f8f9fa; /* Light text color for better contrast */
       }
       .btn {
         font-family: "Poppins", sans-serif;
@@ -34,6 +35,16 @@
       .red-border {
         border-color: red !important;
       }
+      .padding-8px {
+        padding: 8px;
+      }
+      .text-secondary {
+        color: #adb5bd !important; /* Lighter shade for secondary text */
+      }
+      .card-header,
+      .card-body {
+        color: #f8f9fa; /* Light text color for better contrast */
+      }
     </style>
   </head>
   <body class="bg-black text-white body">
@@ -41,58 +52,19 @@
       <!-- Stopwatch and Name Input Section inside the border -->
       <div
         id="stopwatch-container"
-        class="mt-5 border border-white rounded p-2 text-center"
+        class="mt-5 border border-white rounded p-3 text-center"
       >
         <h2>Stopwatch</h2>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            id="speech"
-            name="category"
-            value="speech"
-          />
-          <label class="form-check-label" for="speech">Speech</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            id="icebreaker"
-            name="category"
-            value="icebreaker"
-          />
-          <label class="form-check-label" for="icebreaker">Icebreaker</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            id="table_topics"
-            name="category"
-            value="table_topics"
-          />
-          <label class="form-check-label" for="table_topics"
-            >Table Topics</label
-          >
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            id="evaluation"
-            name="category"
-            value="evaluation"
-
-          />
-          <label class="form-check-label" for="evaluation">Evaluation</label>
-        </div>
-
         <div id="stopwatch" style="font-size: 2em; margin-bottom: 20px">
           0:00:000
         </div>
         <div class="d-flex justify-content-center">
-          <button class="btn btn-light btn-sm mx-2" onclick="startStop()">
+          <button
+            id="startButton"
+            class="btn btn-light btn-sm mx-2"
+            onclick="startStop()"
+            disabled
+          >
             Start
           </button>
           <button class="btn btn-light btn-sm mx-2" onclick="resetStopwatch()">
@@ -100,8 +72,69 @@
           </button>
         </div>
 
+        <!-- Radio buttons for category selection -->
+        <div class="mt-3">
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="speech"
+              name="category"
+              value="speech"
+              onchange="enableStartButton()"
+            />
+            <label class="form-check-label text-secondary" for="speech"
+              >Speech</label
+            >
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="icebreaker"
+              name="category"
+              value="icebreaker"
+              onchange="enableStartButton()"
+            />
+            <label class="form-check-label text-secondary" for="icebreaker"
+              >Icebreaker</label
+            >
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="table_topics"
+              name="category"
+              value="table_topics"
+              onchange="enableStartButton()"
+            />
+            <label class="form-check-label text-secondary" for="table_topics"
+              >Table Topics</label
+            >
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="evaluation"
+              name="category"
+              value="evaluation"
+              onchange="enableStartButton()"
+            />
+            <label class="form-check-label text-secondary" for="evaluation"
+              >Evaluation</label
+            >
+          </div>
+        </div>
+
         <!-- Form to add new user inside the same border -->
-        <form method="POST" action="/add_user" class="mt-4">
+        <form
+          method="POST"
+          action="/add_user"
+          class="mt-4"
+          onsubmit="return validateForm()"
+        >
           <div class="mb-3">
             <label for="name" class="form-label"><h2>Name</h2></label>
             <input
@@ -122,6 +155,23 @@
         </form>
 
         <script>
+          function enableStartButton() {
+            document.getElementById("startButton").disabled = false;
+          }
+
+          function validateForm() {
+            const selectedCategory = document.querySelector(
+              'input[name="category"]:checked'
+            );
+            if (!selectedCategory) {
+              alert("Please select a category before submitting the form.");
+              return false;
+            }
+            document.getElementById("selected_category").value =
+              selectedCategory.value;
+            return true;
+          }
+
           // Update the hidden time and category inputs before form submission
           document
             .querySelector("form")
@@ -138,19 +188,35 @@
       </div>
 
       <!-- Speakers section inside the same container for alignment -->
-      <div class="mt-5 border border-white rounded p-1">
+      <div class="mt-5 border border-white rounded p-3">
         <h2>Speakers</h2>
-        <ol class="mt-3">
+        <div class="row mt-3">
           {% for i in times %}
-          <li><h5>{{ i['name'] }} - {{ i['time'] }}</h5><h5 align=right >{{i['category']}}</h5></</li>
-          <a
-            href='/remove_user/{{i["name"]}}'
-            class="btn btn-danger btn-sm ml-2"
-            style="padding: 5px; margin: 12px"
-            >Delete</a
-          >
+          <div class="col-md-4">
+            <div
+              class="card text-white bg-black mb-3 border border-white padding-8px"
+            >
+              <div class="card-header d-flex justify-content-between">
+                <span style="font-size: 1.8em">{{ i['name'] }}</span>
+                <a
+                  href='/remove_user/{{i["name"]}}'
+                  class="text-danger"
+                  style="font-size: 1.5em; text-decoration: none"
+                  >&times;</a
+                >
+              </div>
+              <div class="card-body">
+                <h5 class="card-title" style="font-size: 1.1em">
+                  {{ i['time'] }}
+                </h5>
+                <p class="card-text" style="font-size: 1.1em">
+                  {{ i['category'] }}
+                </p>
+              </div>
+            </div>
+          </div>
           {% endfor %}
-        </ol>
+        </div>
       </div>
     </div>
 
@@ -168,6 +234,14 @@
       };
 
       function startStop() {
+        const selectedCategory = document.querySelector(
+          'input[name="category"]:checked'
+        );
+        if (!selectedCategory) {
+          alert("Please select a category before starting the stopwatch.");
+          return;
+        }
+
         if (running) {
           clearInterval(interval);
           document.querySelector("button.btn").textContent = "Start";
@@ -209,10 +283,10 @@
         document.getElementById("stopwatch").textContent = "0:00:000";
         document.querySelector("button.btn").textContent = "Start";
         document.getElementById("stopwatch-container").className =
-          "mt-5 border border-5 border-white rounded p-2 text-center";
-            }
+          "mt-5 border border-5 border-white rounded p-3 text-center";
+      }
 
-            function updateBorderColor() {
+      function updateBorderColor() {
         const selectedCategory = document.querySelector(
           'input[name="category"]:checked'
         )?.value;
@@ -223,16 +297,16 @@
 
         if (time >= orange) {
           container.className =
-            "mt-5 border border-5 red-border rounded p-2 text-center";
+            "mt-5 border border-5 red-border rounded p-3 text-center";
         } else if (time >= green) {
           container.className =
-            "mt-5 border border-5 orange-border rounded p-2 text-center";
+            "mt-5 border border-5 orange-border rounded p-3 text-center";
         } else if (time >= white) {
           container.className =
-            "mt-5 border border-5 green-border rounded p-2 text-center"; // Start with green after white threshold
+            "mt-5 border border-5 green-border rounded p-3 text-center"; // Start with green after white threshold
         } else {
           container.className =
-            "mt-5 border border-5 border-white rounded p-2 text-center"; // Keep white before the white threshold
+            "mt-5 border border-5 border-white rounded p-3 text-center"; // Keep white before the white threshold
         }
       }
 
@@ -244,3 +318,55 @@
     </script>
   </body>
 </html>
+<script>
+  async function addUser(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+    const response = await fetch(form.action, {
+      method: form.method,
+      body: formData,
+    });
+    if (response.ok) {
+      const newUser = await response.json();
+      displayUser(newUser);
+      form.reset();
+    } else {
+      alert("Failed to add user.");
+    }
+  }
+
+  async function removeUser(event, userName) {
+    event.preventDefault();
+    const response = await fetch(`/remove_user/${userName}`, {
+      method: "DELETE",
+    });
+    if (response.ok) {
+      document.getElementById(`user-${userName}`).remove();
+    } else {
+      alert("Failed to remove user.");
+    }
+  }
+
+  function displayUser(user) {
+    const userCard = `
+      <div class="col-md-4" id="user-${user.name}">
+        <div class="card text-white bg-black mb-3 border border-white padding-8px">
+          <div class="card-header d-flex justify-content-between">
+            <span style="font-size: 1.8em">${user.name}</span>
+            <a href="#" class="text-danger" style="font-size: 1.5em; text-decoration: none" onclick="removeUser(event, '${user.name}')">&times;</a>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title" style="font-size: 1.1em">${user.time}</h5>
+            <p class="card-text" style="font-size: 1.1em">${user.category}</p>
+          </div>
+        </div>
+      </div>
+    `;
+    document
+      .querySelector(".row.mt-3")
+      .insertAdjacentHTML("beforeend", userCard);
+  }
+
+  document.querySelector("form").addEventListener("submit", addUser);
+</script>
