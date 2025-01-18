@@ -1,10 +1,8 @@
-
-
 ---
 
 # Timer App ⏱️
 
-A web application to manage and display time records, allowing users to add and delete time entries seamlessly. Built with **Flask**, **Bootstrap**, and integrated with **Supabase** for database operations.
+A web application to manage and display the time records, allowing users to add and delete time entries seamlessly. Built with **Flask**, **Bootstrap**, and integrated with **Supabase** for database operations.
 
 ## Features
 
@@ -76,4 +74,3 @@ Feel free to fork the repository and submit pull requests for improvements or bu
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
-
