@@ -83,6 +83,7 @@
             id="evaluation"
             name="category"
             value="evaluation"
+
           />
           <label class="form-check-label" for="evaluation">Evaluation</label>
         </div>
@@ -208,10 +209,10 @@
         document.getElementById("stopwatch").textContent = "0:00:000";
         document.querySelector("button.btn").textContent = "Start";
         document.getElementById("stopwatch-container").className =
-          "mt-5 border border-white rounded p-2 text-center";
-      }
+          "mt-5 border border-5 border-white rounded p-2 text-center";
+            }
 
-      function updateBorderColor() {
+            function updateBorderColor() {
         const selectedCategory = document.querySelector(
           'input[name="category"]:checked'
         )?.value;
@@ -222,16 +223,16 @@
 
         if (time >= orange) {
           container.className =
-            "mt-5 border red-border rounded p-2 text-center";
+            "mt-5 border border-5 red-border rounded p-2 text-center";
         } else if (time >= green) {
           container.className =
-            "mt-5 border orange-border rounded p-2 text-center";
+            "mt-5 border border-5 orange-border rounded p-2 text-center";
         } else if (time >= white) {
           container.className =
-            "mt-5 border green-border rounded p-2 text-center"; // Start with green after white threshold
+            "mt-5 border border-5 green-border rounded p-2 text-center"; // Start with green after white threshold
         } else {
           container.className =
-            "mt-5 border border-white rounded p-2 text-center"; // Keep white before the white threshold
+            "mt-5 border border-5 border-white rounded p-2 text-center"; // Keep white before the white threshold
         }
       }
 
