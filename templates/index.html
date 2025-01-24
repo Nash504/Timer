@@ -273,7 +273,7 @@
             : milliseconds < 100
             ? "0" + milliseconds
             : milliseconds
-        }`;
+        }`.slice(0, -1);
 
         updateBorderColor();
       }
