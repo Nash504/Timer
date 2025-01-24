@@ -157,6 +157,9 @@
         <script>
           function enableStartButton() {
             document.getElementById("startButton").disabled = false;
+            // Preserve the input text
+            const nameInput = document.getElementById("name");
+            nameInput.value = nameInput.value;
           }
 
           function validateForm() {
